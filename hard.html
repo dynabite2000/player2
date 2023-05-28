@@ -12,29 +12,37 @@
     }
     
     .question {
+      margin-top: 20px;
       font-size: 24px;
+    }
+    
+    .answer {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    
+    .feedback {
+      margin-top: 10px;
+      font-size: 20px;
+      color: green;
+    }
+    
+    .score {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+    
+    .button-container {
       margin-top: 20px;
     }
     
-    .answer-input {
-      font-size: 18px;
-      padding: 10px;
-      margin-top: 10px;
-    }
-    
-    .submit-button {
-      font-size: 18px;
+    .button {
       padding: 10px 20px;
-      margin-top: 10px;
+      font-size: 18px;
       background-color: #ADD8E6;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-    }
-    
-    .result {
-      font-size: 18px;
-      margin-top: 10px;
     }
   </style>
   <title>Math Game</title>
@@ -44,86 +52,95 @@
   
   <div class="question" id="question"></div>
   
-  <input type="text" class="answer-input" id="answer" placeholder="Enter your answer" autofocus>
+  <input type="text" id="answer" placeholder="Enter your answer" autofocus>
+  <button class="button" onclick="checkAnswer()">Submit</button>
   
-  <button class="submit-button" onclick="submitAnswer()">Submit</button>
+  <div class="feedback" id="feedback"></div>
   
-  <div class="result" id="result"></div>
+  <div class="score">Score: <span id="score">0</span></div>
+  
+  <div class="button-container">
+    <button class="button" onclick="startGame()">Start Game</button>
+    <button class="button" onclick="resetGame()">Reset Game</button>
+  </div>
   
   <script>
+    let score = 0;
+    let isGameActive = false;
+    let currentAnswer = null;
+  
     function generateQuestion() {
       const operators = ['+', '-', '*', '/'];
       const randomOperator = operators[Math.floor(Math.random() * operators.length)];
-      let num1, num2, question;
+      let num1 = (Math.random() * 100).toFixed(2);
+      let num2 = (Math.random() * 100).toFixed(2);
+      let questionText = '';
       
       switch (randomOperator) {
         case '+':
-          num1 = getRandomNumber(0, 10000000);
-          num2 = getRandomNumber(0, 10000000);
-          question = `${num1} + ${num2}`;
+          questionText = `${num1} + ${num2}`;
           break;
         case '-':
-          num1 = getRandomNumber(0, 10000000);
-          num2 = getRandomNumber(0, 10000000);
-          question = `${num1} - ${num2}`;
+          questionText = `${num1} - ${num2}`;
           break;
         case '*':
-          num1 = getRandomNumber(0, 10000);
-          num2 = getRandomNumber(0, 10000);
-          question = `${num1} * ${num2}`;
+          questionText = `${num1} * ${num2}`;
           break;
         case '/':
-          num2 = getRandomNumber(1, 10000);
-          const product = getRandomNumber(1, 10000);
-          num1 = num2 * product;
-          question = `${num1} / ${num2}`;
+          num1 = num1 * num2; // Ensure a whole number division
+          questionText = `${num1} / ${num2}`;
           break;
       }
       
-      document.getElementById('question').textContent = question;
+      return {
+        question: questionText,
+        answer: eval(questionText)
+      };
     }
     
-    function getRandomNumber(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    function startGame() {
+      if (!isGameActive) {
+        isGameActive = true;
+        score = 0;
+        document.getElementById('score').innerText = score;
+        askQuestion();
+      }
     }
     
-    function submitAnswer() {
-      const answer = parseInt(document.getElementById('answer').value);
-      const question = document.getElementById('question').textContent;
-      let result;
-      
-      if (isNaN(answer)) {
-        result = 'Please enter a valid number.';
-      } else {
-        const [num1, operator, num2] = question.split(' ');
-        const correctAnswer = calculateAnswer(parseInt(num1), operator, parseInt(num2));
-        
-        if (answer === correctAnswer) {
-          result = 'Correct!';
-        } else {
-          result = `Wrong. The correct answer is ${correctAnswer}.`;
+    function askQuestion() {
+      const { question, answer } = generateQuestion();
+      document.getElementById('question').innerText = question;
+      document.getElementById('answer').value = '';
+      document.getElementById('answer').focus();
+      document.getElementById('feedback').innerText = '';
+      currentAnswer = answer;
+    }
+    
+    function checkAnswer() {
+      if (isGameActive) {
+        const userAnswer = parseFloat(document.getElementById('answer').value);
+        if (!isNaN(userAnswer)) {
+          if (userAnswer === currentAnswer) {
+            score++;
+            document.getElementById('score').innerText = score;
+            document.getElementById('feedback').innerText = 'Correct!';
+          } else {
+            document.getElementById('feedback').innerText = 'Wrong answer. Try again!';
+          }
+          
+          askQuestion();
         }
       }
-      
-      document.getElementById('result').textContent = result;
+    }
+    
+    function resetGame() {
+      isGameActive = false;
+      score = 0;
+      document.getElementById('score').innerText = score;
+      document.getElementById('question').innerText = '';
       document.getElementById('answer').value = '';
-      generateQuestion();
+      document.getElementById('feedback').innerText = '';
     }
-    
-    function calculateAnswer(num1, operator, num2) {
-      switch (operator) {
-        case '+':
-          return num1 + num2;
-        case '-':
-          return num1 - num2;
-        case '*':
-          return num1 * num2;
-        case '/':
-          return num1 / num2;
-      }
-    }
-    
-    generateQuestion();
   </script>
 </body>
 </html>
