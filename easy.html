@@ -67,12 +67,13 @@
   <script>
     let score = 0;
     let isGameActive = false;
+    let currentAnswer = null;
   
     function generateQuestion() {
       const operators = ['+', '-', '*', '/'];
       const randomOperator = operators[Math.floor(Math.random() * operators.length)];
-      let num1 = Math.floor(Math.random() * 99) + 1;
-      let num2 = Math.floor(Math.random() * 99) + 1;
+      let num1 = Math.floor(Math.random() * 16);
+      let num2 = Math.floor(Math.random() * 16);
       let questionText = '';
       
       switch (randomOperator) {
