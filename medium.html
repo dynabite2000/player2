@@ -36,6 +36,19 @@
       font-size: 18px;
       margin-top: 10px;
     }
+    
+    .button-container {
+      margin-top: 20px;
+    }
+    
+    .button {
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: #ADD8E6;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
   <title>Math Game</title>
 </head>
@@ -50,7 +63,15 @@
   
   <div class="result" id="result"></div>
   
+  <div class="button-container">
+    <button class="button" onclick="startGame()">Start Game</button>
+    <button class="button" onclick="resetGame()">Reset Game</button>
+    <a href="index.html" class="button">Go to index</a>
+  </div>
+  
   <script>
+    let isGameActive = false;
+  
     function generateQuestion() {
       const operators = ['+', '-', '*', '/', 'fraction'];
       const randomOperator = operators[Math.floor(Math.random() * operators.length)];
@@ -91,27 +112,43 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     
-    function submitAnswer() {
-      const answer = parseFloat(document.getElementById('answer').value);
-      const question = document.getElementById('question').textContent;
-      let result;
-      
-      if (isNaN(answer)) {
-        result = 'Please enter a valid number.';
-      } else {
-        const [num1, operator, num2] = question.split(' ');
-        const correctAnswer = calculateAnswer(parseFloat(num1), operator, parseFloat(num2));
-        
-        if (answer === correctAnswer) {
-          result = 'Correct!';
-        } else {
-          result = `Wrong. The correct answer is ${correctAnswer}.`;
-        }
-      }
-      
-      document.getElementById('result').textContent = result;
-      document.getElementById('answer').value = '';
+    function startGame() {
+      isGameActive = true;
       generateQuestion();
+      document.getElementById('answer').value = '';
+      document.getElementById('result').textContent = '';
+    }
+    
+    function resetGame() {
+      isGameActive = false;
+      document.getElementById('question').textContent = '';
+      document.getElementById('answer').value = '';
+      document.getElementById('result').textContent = '';
+    }
+    
+    function submitAnswer() {
+      if (isGameActive) {
+        const answer = parseFloat(document.getElementById('answer').value);
+        const question = document.getElementById('question').textContent;
+        let result;
+        
+        if (isNaN(answer)) {
+          result = 'Please enter a valid number.';
+        } else {
+          const [num1, operator, num2] = question.split(' ');
+          const correctAnswer = calculateAnswer(parseFloat(num1), operator, parseFloat(num2));
+          
+          if (answer === correctAnswer) {
+            result = 'Correct!';
+          } else {
+            result = `Wrong. The correct answer is ${correctAnswer}.`;
+          }
+        }
+        
+        document.getElementById('result').textContent = result;
+        document.getElementById('answer').value = '';
+        generateQuestion();
+      }
     }
     
     function calculateAnswer(num1, operator, num2) {
@@ -128,8 +165,6 @@
           return num1 / num2;
       }
     }
-    
-    generateQuestion();
   </script>
 </body>
 </html>
