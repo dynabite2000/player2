@@ -58,23 +58,23 @@
       
       switch (randomOperator) {
         case '+':
-          num1 = getRandomNumber(1, 1000);
-          num2 = getRandomNumber(1, 1000);
+          num1 = getRandomNumber(0, 10000000);
+          num2 = getRandomNumber(0, 10000000);
           question = `${num1} + ${num2}`;
           break;
         case '-':
-          num1 = getRandomNumber(1, 1000);
-          num2 = getRandomNumber(1, 1000);
+          num1 = getRandomNumber(0, 10000000);
+          num2 = getRandomNumber(0, 10000000);
           question = `${num1} - ${num2}`;
           break;
         case '*':
-          num1 = getRandomNumber(1, 100);
-          num2 = getRandomNumber(1, 10);
+          num1 = getRandomNumber(0, 10000);
+          num2 = getRandomNumber(0, 10000);
           question = `${num1} * ${num2}`;
           break;
         case '/':
-          num2 = getRandomNumber(1, 10);
-          const product = getRandomNumber(1, 100);
+          num2 = getRandomNumber(1, 10000);
+          const product = getRandomNumber(1, 10000);
           num1 = num2 * product;
           question = `${num1} / ${num2}`;
           break;
@@ -84,11 +84,11 @@
     }
     
     function getRandomNumber(min, max) {
-      return (Math.random() * (max - min) + min).toFixed(2);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     
     function submitAnswer() {
-      const answer = parseFloat(document.getElementById('answer').value);
+      const answer = parseInt(document.getElementById('answer').value);
       const question = document.getElementById('question').textContent;
       let result;
       
@@ -96,7 +96,7 @@
         result = 'Please enter a valid number.';
       } else {
         const [num1, operator, num2] = question.split(' ');
-        const correctAnswer = calculateAnswer(parseFloat(num1), operator, parseFloat(num2));
+        const correctAnswer = calculateAnswer(parseInt(num1), operator, parseInt(num2));
         
         if (answer === correctAnswer) {
           result = 'Correct!';
@@ -113,13 +113,13 @@
     function calculateAnswer(num1, operator, num2) {
       switch (operator) {
         case '+':
-          return (num1 + num2).toFixed(2);
+          return num1 + num2;
         case '-':
-          return (num1 - num2).toFixed(2);
+          return num1 - num2;
         case '*':
-          return (num1 * num2).toFixed(2);
+          return num1 * num2;
         case '/':
-          return (num1 / num2).toFixed(2);
+          return num1 / num2;
       }
     }
     
