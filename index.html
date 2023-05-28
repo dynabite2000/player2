@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    .puzzle-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .letter {
+      font-size: 24px;
+      padding: 10px;
+      background-color: #F5F5F5;
+      margin: 5px;
+      cursor: pointer;
+    }
+    
+    .letter.selected {
+      background-color: #ADD8E6;
+    }
+  </style>
+  <title>Word Puzzle Game</title>
+</head>
+<body>
+  <h1>Word Puzzle Game</h1>
+  
+  <div class="puzzle-container">
+    <div class="letter">H</div>
+    <div class="letter">E</div>
+    <div class="letter">L</div>
+    <div class="letter">L</div>
+    <div class="letter">O</div>
+  </div>
+  
+  <script>
+    const letters = document.querySelectorAll('.letter');
+  
+    letters.forEach(letter => {
+      letter.addEventListener('click', () => {
+        letter.classList.toggle('selected');
+      });
+    });
+  </script>
+</body>
+</html>
 
