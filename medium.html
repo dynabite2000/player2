@@ -52,31 +52,35 @@
   
   <script>
     function generateQuestion() {
-      const operators = ['+', '-', '*', '/'];
+      const operators = ['+', '-', '*', '/', 'fraction'];
       const randomOperator = operators[Math.floor(Math.random() * operators.length)];
       let num1, num2, question;
       
       switch (randomOperator) {
         case '+':
-          num1 = getRandomNumber(1, 1000);
-          num2 = getRandomNumber(1, 1000);
+          num1 = getRandomNumber(0, 49);
+          num2 = getRandomNumber(0, 49);
           question = `${num1} + ${num2}`;
           break;
         case '-':
-          num1 = getRandomNumber(1, 1000);
-          num2 = getRandomNumber(1, 1000);
+          num1 = getRandomNumber(0, 49);
+          num2 = getRandomNumber(0, 49);
           question = `${num1} - ${num2}`;
           break;
         case '*':
-          num1 = getRandomNumber(1, 100);
-          num2 = getRandomNumber(1, 10);
+          num1 = getRandomNumber(0, 49);
+          num2 = getRandomNumber(0, 49);
           question = `${num1} * ${num2}`;
           break;
         case '/':
-          num2 = getRandomNumber(1, 10);
-          const product = getRandomNumber(1, 100);
-          num1 = num2 * product;
+          num1 = getRandomNumber(0, 49);
+          num2 = getRandomNumber(1, 49);
           question = `${num1} / ${num2}`;
+          break;
+        case 'fraction':
+          num1 = getRandomNumber(0, 49);
+          num2 = getRandomNumber(1, 49);
+          question = `(${num1}/${num2})`;
           break;
       }
       
@@ -84,7 +88,7 @@
     }
     
     function getRandomNumber(min, max) {
-      return (Math.random() * (max - min) + min).toFixed(2);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     
     function submitAnswer() {
@@ -110,4 +114,22 @@
       generateQuestion();
     }
     
-    function calculateAnswer
+    function calculateAnswer(num1, operator, num2) {
+      switch (operator) {
+        case '+':
+          return num1 + num2;
+        case '-':
+          return num1 - num2;
+        case '*':
+          return num1 * num2;
+        case '/':
+          return num1 / num2;
+        case 'fraction':
+          return num1 / num2;
+      }
+    }
+    
+    generateQuestion();
+  </script>
+</body>
+</html>
