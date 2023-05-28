@@ -28,6 +28,35 @@
     .letter.selected {
       background-color: #ADD8E6;
     }
+    
+    .word {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #777;
+    }
+    
+    .word.correct {
+      color: green;
+    }
+    
+    .word.wrong {
+      color: red;
+    }
+    
+    .score {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+    
+    .register-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #ADD8E6;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
   <title>Word Puzzle Game</title>
 </head>
@@ -42,15 +71,71 @@
     <div class="letter">O</div>
   </div>
   
+  <div class="word">Selected word: <span id="selected-word"></span></div>
+  <div class="word">Status: <span id="status"></span></div>
+  
+  <div class="score">Score: <span id="score">0</span></div>
+  
+  <button class="register-button" onclick="registerWord()">Register Word</button>
+  
   <script>
     const letters = document.querySelectorAll('.letter');
+    const selectedWordElement = document.getElementById('selected-word');
+    const statusElement = document.getElementById('status');
+    const scoreElement = document.getElementById('score');
+    let selectedLetters = [];
+    const targetWord = ['H', 'E', 'L', 'L', 'O'];
+    let score = 0;
+    let registeredWords = [];
   
     letters.forEach(letter => {
       letter.addEventListener('click', () => {
         letter.classList.toggle('selected');
+        const letterIndex = selectedLetters.indexOf(letter.innerText);
+        if (letterIndex !== -1) {
+          selectedLetters.splice(letterIndex, 1);
+        } else {
+          selectedLetters.push(letter.innerText);
+        }
+        
+        selectedWordElement.innerText = selectedLetters.join('');
+        
+        checkWord();
       });
     });
+    
+    function checkWord() {
+      if (selectedLetters.length === targetWord.length) {
+        const isCorrect = selectedLetters.every((letter, index) => letter === targetWord[index]);
+        statusElement.innerText = isCorrect ? 'Correct' : 'Wrong';
+        statusElement.classList.remove('correct', 'wrong');
+        statusElement.classList.add(isCorrect ? 'correct' : 'wrong');
+      } else {
+        statusElement.innerText = '';
+        statusElement.classList.remove('correct', 'wrong');
+      }
+    }
+    
+    function registerWord() {
+      if (statusElement.innerText === 'Correct' && !registeredWords.includes(selectedLetters.join(''))) {
+        const word = selectedLetters.join('');
+        registeredWords.push(word);
+        score += word.length;
+        scoreElement.innerText = score;
+      }
+      
+      resetSelection();
+    }
+    
+    function resetSelection() {
+      selectedLetters = [];
+      selectedWordElement.innerText = '';
+      statusElement.innerText = '';
+      statusElement.classList.remove('correct', 'wrong');
+      letters.forEach(letter => {
+        letter.classList.remove('selected');
+      });
+    }
   </script>
 </body>
 </html>
-
