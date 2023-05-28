@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    .question {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+    
+    .answer-input {
+      font-size: 18px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    
+    .submit-button {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin-top: 10px;
+      background-color: #ADD8E6;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .result {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+  <title>Math Game</title>
+</head>
+<body>
+  <h1>Math Game</h1>
+  
+  <div class="question" id="question"></div>
+  
+  <input type="text" class="answer-input" id="answer" placeholder="Enter your answer" autofocus>
+  
+  <button class="submit-button" onclick="submitAnswer()">Submit</button>
+  
+  <div class="result" id="result"></div>
+  
+  <script>
+    function generateQuestion() {
+      const operators = ['+', '-', '*', '/'];
+      const randomOperator = operators[Math.floor(Math.random() * operators.length)];
+      let num1, num2, question;
+      
+      switch (randomOperator) {
+        case '+':
+          num1 = getRandomNumber(1, 1000);
+          num2 = getRandomNumber(1, 1000);
+          question = `${num1} + ${num2}`;
+          break;
+        case '-':
+          num1 = getRandomNumber(1, 1000);
+          num2 = getRandomNumber(1, 1000);
+          question = `${num1} - ${num2}`;
+          break;
+        case '*':
+          num1 = getRandomNumber(1, 100);
+          num2 = getRandomNumber(1, 10);
+          question = `${num1} * ${num2}`;
+          break;
+        case '/':
+          num2 = getRandomNumber(1, 10);
+          const product = getRandomNumber(1, 100);
+          num1 = num2 * product;
+          question = `${num1} / ${num2}`;
+          break;
+      }
+      
+      document.getElementById('question').textContent = question;
+    }
+    
+    function getRandomNumber(min, max) {
+      return (Math.random() * (max - min) + min).toFixed(2);
+    }
+    
+    function submitAnswer() {
+      const answer = parseFloat(document.getElementById('answer').value);
+      const question = document.getElementById('question').textContent;
+      let result;
+      
+      if (isNaN(answer)) {
+        result = 'Please enter a valid number.';
+      } else {
+        const [num1, operator, num2] = question.split(' ');
+        const correctAnswer = calculateAnswer(parseFloat(num1), operator, parseFloat(num2));
+        
+        if (answer === correctAnswer) {
+          result = 'Correct!';
+        } else {
+          result = `Wrong. The correct answer is ${correctAnswer}.`;
+        }
+      }
+      
+      document.getElementById('result').textContent = result;
+      document.getElementById('answer').value = '';
+      generateQuestion();
+    }
+    
+    function calculateAnswer(num1, operator, num2) {
+      switch (operator) {
+        case '+':
+          return (num1 + num2).toFixed(2);
+        case '-':
+          return (num1 - num2).toFixed(2);
+        case '*':
+          return (num1 * num2).toFixed(2);
+        case '/':
+          return (num1 / num2).toFixed(2);
+      }
+    }
+    
+    generateQuestion();
+  </script>
+</body>
+</html>
