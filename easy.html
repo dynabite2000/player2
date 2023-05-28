@@ -62,6 +62,7 @@
   <div class="button-container">
     <button class="button" onclick="startGame()">Start Game</button>
     <button class="button" onclick="resetGame()">Reset Game</button>
+    <a href="../index.html" class="button">Go to index</a>
   </div>
   
   <script>
@@ -132,10 +133,7 @@
         }
       }
     }
-    function resetGame() {
-  window.location.href = '../index.html'; // Redirect to index.html in the parent directory
-}
-
+    
     function resetGame() {
       isGameActive = false;
       score = 0;
