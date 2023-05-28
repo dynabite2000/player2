@@ -11,36 +11,20 @@
       color: #333;
     }
     
-    .puzzle-container {
+    .question {
       margin-top: 20px;
-      display: flex;
-      justify-content: center;
-    }
-    
-    .letter {
       font-size: 24px;
-      padding: 10px;
-      background-color: #F5F5F5;
-      margin: 5px;
-      cursor: pointer;
     }
     
-    .letter.selected {
-      background-color: #ADD8E6;
-    }
-    
-    .word {
-      margin-top: 20px;
+    .answer {
+      margin-top: 10px;
       font-size: 20px;
-      color: #777;
     }
     
-    .word.correct {
+    .feedback {
+      margin-top: 10px;
+      font-size: 20px;
       color: green;
-    }
-    
-    .word.wrong {
-      color: red;
     }
     
     .score {
@@ -48,8 +32,11 @@
       font-size: 24px;
     }
     
-    .register-button {
+    .button-container {
       margin-top: 20px;
+    }
+    
+    .button {
       padding: 10px 20px;
       font-size: 18px;
       background-color: #ADD8E6;
@@ -58,83 +45,100 @@
       cursor: pointer;
     }
   </style>
-  <title>Word Puzzle Game</title>
+  <title>Math Game</title>
 </head>
 <body>
-  <h1>Word Puzzle Game</h1>
+  <h1>Math Game</h1>
   
-  <div class="puzzle-container">
-    <div class="letter">H</div>
-    <div class="letter">E</div>
-    <div class="letter">L</div>
-    <div class="letter">L</div>
-    <div class="letter">O</div>
-  </div>
+  <div class="question" id="question"></div>
   
-  <div class="word">Selected word: <span id="selected-word"></span></div>
-  <div class="word">Status: <span id="status"></span></div>
+  <input type="text" id="answer" placeholder="Enter your answer" autofocus>
+  <button class="button" onclick="checkAnswer()">Submit</button>
+  
+  <div class="feedback" id="feedback"></div>
   
   <div class="score">Score: <span id="score">0</span></div>
   
-  <button class="register-button" onclick="registerWord()">Register Word</button>
+  <div class="button-container">
+    <button class="button" onclick="startGame()">Start Game</button>
+    <button class="button" onclick="resetGame()">Reset Game</button>
+  </div>
   
   <script>
-    const letters = document.querySelectorAll('.letter');
-    const selectedWordElement = document.getElementById('selected-word');
-    const statusElement = document.getElementById('status');
-    const scoreElement = document.getElementById('score');
-    let selectedLetters = [];
-    const targetWord = ['H', 'E', 'L', 'L', 'O'];
     let score = 0;
-    let registeredWords = [];
+    let isGameActive = false;
   
-    letters.forEach(letter => {
-      letter.addEventListener('click', () => {
-        letter.classList.toggle('selected');
-        const letterIndex = selectedLetters.indexOf(letter.innerText);
-        if (letterIndex !== -1) {
-          selectedLetters.splice(letterIndex, 1);
-        } else {
-          selectedLetters.push(letter.innerText);
-        }
-        
-        selectedWordElement.innerText = selectedLetters.join('');
-        
-        checkWord();
-      });
-    });
-    
-    function checkWord() {
-      if (selectedLetters.length === targetWord.length) {
-        const isCorrect = selectedLetters.every((letter, index) => letter === targetWord[index]);
-        statusElement.innerText = isCorrect ? 'Correct' : 'Wrong';
-        statusElement.classList.remove('correct', 'wrong');
-        statusElement.classList.add(isCorrect ? 'correct' : 'wrong');
-      } else {
-        statusElement.innerText = '';
-        statusElement.classList.remove('correct', 'wrong');
-      }
-    }
-    
-    function registerWord() {
-      if (statusElement.innerText === 'Correct' && !registeredWords.includes(selectedLetters.join(''))) {
-        const word = selectedLetters.join('');
-        registeredWords.push(word);
-        score += word.length;
-        scoreElement.innerText = score;
+    function generateQuestion() {
+      const operators = ['+', '-', '*', '/'];
+      const randomOperator = operators[Math.floor(Math.random() * operators.length)];
+      let num1 = Math.floor(Math.random() * 99) + 1;
+      let num2 = Math.floor(Math.random() * 99) + 1;
+      let questionText = '';
+      
+      switch (randomOperator) {
+        case '+':
+          questionText = `${num1} + ${num2}`;
+          break;
+        case '-':
+          questionText = `${num1} - ${num2}`;
+          break;
+        case '*':
+          questionText = `${num1} * ${num2}`;
+          break;
+        case '/':
+          num1 = num1 * num2; // Ensure a whole number division
+          questionText = `${num1} / ${num2}`;
+          break;
       }
       
-      resetSelection();
+      return {
+        question: questionText,
+        answer: eval(questionText)
+      };
     }
     
-    function resetSelection() {
-      selectedLetters = [];
-      selectedWordElement.innerText = '';
-      statusElement.innerText = '';
-      statusElement.classList.remove('correct', 'wrong');
-      letters.forEach(letter => {
-        letter.classList.remove('selected');
-      });
+    function startGame() {
+      if (!isGameActive) {
+        isGameActive = true;
+        score = 0;
+        document.getElementById('score').innerText = score;
+        askQuestion();
+      }
+    }
+    
+    function askQuestion() {
+      const { question, answer } = generateQuestion();
+      document.getElementById('question').innerText = question;
+      document.getElementById('answer').value = '';
+      document.getElementById('answer').focus();
+      document.getElementById('feedback').innerText = '';
+      currentAnswer = answer;
+    }
+    
+    function checkAnswer() {
+      if (isGameActive) {
+        const userAnswer = parseInt(document.getElementById('answer').value);
+        if (!isNaN(userAnswer)) {
+          if (userAnswer === currentAnswer) {
+            score++;
+            document.getElementById('score').innerText = score;
+            document.getElementById('feedback').innerText = 'Correct!';
+          } else {
+            document.getElementById('feedback').innerText = 'Wrong answer. Try again!';
+          }
+          
+          askQuestion();
+        }
+      }
+    }
+    
+    function resetGame() {
+      isGameActive = false;
+      score = 0;
+      document.getElementById('score').innerText = score;
+      document.getElementById('question').innerText = '';
+      document.getElementById('answer').value = '';
+      document.getElementById('feedback').innerText = '';
     }
   </script>
 </body>
